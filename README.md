@@ -1,7 +1,7 @@
 # Socket
 Simple socket wrapper class for CPP. Working in Unix and Windows.
 
-[![CMake CI (Unix and Windows)](https://github.com/dgercho/socket/blob/dev/.github/workflows/CMake.yml/badge.svg)](hhttps://github.com/dgercho/socket/blob/dev/.github/workflows/CMake.yml)
+[![CI Workflow (Windows and Unix)](https://github.com/dgercho/socket/actions/workflows/CMake.yml/badge.svg)](https://github.com/dgercho/socket/actions/workflows/CMake.yml/badge.svg)
 
 ## How to use it?
 Copy the the files from `src` to your project (`socket.cpp` and `socket.h`), and include the header file.
