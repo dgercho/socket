@@ -5,7 +5,6 @@
 #include <winsock2.h>
 #pragma comment(lib, "Ws2_32.lib")
 #include <ws2tcpip.h>
-typedef uint32_t socklen_t;
 #else // for Unix
 typedef int SOCKET;
 #include <sys/socket.h>
