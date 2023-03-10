@@ -1,4 +1,5 @@
 #include "socket.h"
+#include <cstring>
 #include <stdexcept>
 #include <system_error>
 

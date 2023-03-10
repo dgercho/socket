@@ -12,6 +12,5 @@ target_link_libraries(
 )
 
 include(GoogleTest)
-include(ctest)
 
 gtest_discover_tests(socket_tests)
