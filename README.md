@@ -1,7 +1,10 @@
 # Socket
-Simple socket wrapper class for CPP. Working in Unix and Windows.
+Simple socket wrapper class for C++. Runs on Windows, Linux and macOS.
 
-[![CI Workflow (Windows and Unix)](https://github.com/dgercho/socket/actions/workflows/CMake.yml/badge.svg)](https://github.com/dgercho/socket/actions/workflows/CMake.yml/badge.svg)
+Build and test workflows: 
+- Windows CI Status: [![Windows](https://github.com/dgercho/socket/actions/workflows/Windows.yml/badge.svg)](https://github.com/dgercho/socket/actions/workflows/Windows.yml/badge.svg) 
+- Unix CI Status: [![Unix](https://github.com/dgercho/socket/actions/workflows/Unix.yml/badge.svg)](https://github.com/dgercho/socket/actions/workflows/Unix.yml/badge.svg)
+
 
 ## How to use it?
 Copy the the files from `src` to your project (`socket.cpp` and `socket.h`), and include the header file.
