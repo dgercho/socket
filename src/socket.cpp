@@ -1,15 +1,19 @@
 #include "socket.h"
+
 #include <cstring>
 #include <stdexcept>
 #include <system_error>
 
 constexpr auto SOCKET_ERROR_CODE = -1;
 
-Socket::Socket(Protocol protocol) : m_protocol(protocol)
+Socket::Socket(Protocol protocol)
+    : m_protocol(protocol)
 #ifdef _WIN32
-, m_socket(INVALID_SOCKET)
+      ,
+      m_socket(INVALID_SOCKET)
 #else
-, m_socket(0)
+      ,
+      m_socket(0)
 #endif
 {
 #ifdef _WIN32
@@ -21,6 +25,10 @@ Socket::Socket(Protocol protocol) : m_protocol(protocol)
 
     int type = (protocol == Protocol::TCP) ? SOCK_STREAM : SOCK_DGRAM;
     m_socket = socket(AF_INET, type, 0);
+
+    linger lin;
+    lin.l_onoff = 0;
+    lin.l_linger = 0;
 
     if (m_socket == SOCKET_ERROR_CODE)
     {
@@ -38,14 +46,6 @@ Socket::Socket(SOCKET socket, Protocol protocol) : m_protocol(protocol), m_socke
     {
         throw std::runtime_error(std::strerror(errno));
     }
-#endif
-}
-
-Socket::~Socket()
-{
-    close();
-#ifdef _WIN32
-    WSACleanup();
 #endif
 }
 
@@ -91,19 +91,6 @@ Socket Socket::accept()
     return Socket(std::move(client_socket), m_protocol);
 }
 
-void Socket::close()
-{
-    if (m_socket != SOCKET_ERROR_CODE)
-    {
-#ifdef _WIN32
-        ::closesocket(m_socket);
-#else
-        ::close(m_socket);
-#endif
-        m_socket = SOCKET_ERROR_CODE;
-    }
-}
-
 int Socket::send(const void *data, size_t length)
 {
     return ::send(m_socket, static_cast<const char *>(data), length, 0);
@@ -112,4 +99,26 @@ int Socket::send(const void *data, size_t length)
 int Socket::recv(void *buffer, size_t length)
 {
     return ::recv(m_socket, static_cast<char *>(buffer), length, 0);
+}
+
+void Socket::close()
+{
+    if (m_socket != SOCKET_ERROR_CODE)
+    {
+        int result = 0;
+#ifdef _WIN32
+        result = ::closesocket(m_socket);
+#else
+        result = ::close(m_socket);
+#endif
+        m_socket = SOCKET_ERROR_CODE;
+    }
+}
+
+Socket::~Socket()
+{
+    close();
+#ifdef _WIN32
+    WSACleanup();
+#endif
 }

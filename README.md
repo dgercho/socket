@@ -2,8 +2,8 @@
 Simple socket wrapper class for C++. Runs on Windows, Linux and macOS.
 
 Build and test workflows: 
-- Windows CI Status: [![Windows](https://github.com/dgercho/socket/actions/workflows/Windows.yml/badge.svg)](https://github.com/dgercho/socket/actions/workflows/Windows.yml/badge.svg) 
-- Unix CI Status: [![Unix](https://github.com/dgercho/socket/actions/workflows/Unix.yml/badge.svg)](https://github.com/dgercho/socket/actions/workflows/Unix.yml/badge.svg)
+[![Windows](https://github.com/dgercho/socket/actions/workflows/Windows.yml/badge.svg)](https://github.com/dgercho/socket/actions/workflows/Windows.yml) 
+[![Unix](https://github.com/dgercho/socket/actions/workflows/Unix.yml/badge.svg)](https://github.com/dgercho/socket/actions/workflows/Unix.yml)
 
 
 ## How to use it?
