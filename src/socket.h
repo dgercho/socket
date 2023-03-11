@@ -41,11 +41,11 @@ public:
     void bind(int port);
 
     /// @brief Allows to listen for connections.
-    /// @param backlog (int) -  
+    /// @param backlog (int) - number of pending connections the socket will hold.
     void listen(int backlog);
     
     /// @brief Accept new connections.
-    /// @return A new socket.
+    /// @return A new `Socket` class.
     Socket accept();
 
     /// @brief Close the socket.
@@ -54,17 +54,16 @@ public:
     /// @brief Send data to endpoint.
     /// @param data (const void *) - pointer to data buffer.
     /// @param length (size_t) - length of buffer to send.
-    /// @return The number of bytes accepted by the kernel for sending.
+    /// @return (int) The number of bytes accepted by the kernel for sending.
     int send(const void *data, size_t length);
 
     /// @brief Receive data from endpoint.
     /// @param buffer (void *) - buffer to write received data.
     /// @param length (size_t) - length to read from socket.
-    /// @return The number of received bytes.
+    /// @return (int) The number of received bytes.
     int recv(void *buffer, size_t length);
 
 protected:
-    
     Socket(SOCKET socket, Protocol protocol);
 
 private:

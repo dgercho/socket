@@ -41,14 +41,6 @@ Socket::Socket(SOCKET socket, Protocol protocol) : m_protocol(protocol), m_socke
 #endif
 }
 
-Socket::~Socket()
-{
-    close();
-#ifdef _WIN32
-    WSACleanup();
-#endif
-}
-
 int Socket::connect(std::string address, int port)
 {
     sockaddr_in addr;
@@ -91,6 +83,16 @@ Socket Socket::accept()
     return Socket(std::move(client_socket), m_protocol);
 }
 
+int Socket::send(const void *data, size_t length)
+{
+    return ::send(m_socket, static_cast<const uint8_t *>(data), length, 0);
+}
+
+int Socket::recv(void *buffer, size_t length)
+{
+    return ::recv(m_socket, static_cast<uint8_t *>(buffer), length, 0);
+}
+
 void Socket::close()
 {
     if (m_socket != SOCKET_ERROR_CODE)
@@ -104,12 +106,10 @@ void Socket::close()
     }
 }
 
-int Socket::send(const void *data, size_t length)
+Socket::~Socket()
 {
-    return ::send(m_socket, static_cast<const char *>(data), length, 0);
-}
-
-int Socket::recv(void *buffer, size_t length)
-{
-    return ::recv(m_socket, static_cast<char *>(buffer), length, 0);
+    close();
+#ifdef _WIN32
+    WSACleanup();
+#endif
 }
