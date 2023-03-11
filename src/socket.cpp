@@ -5,7 +5,7 @@
 #include <system_error>
 
 constexpr auto SOCKET_ERROR_CODE = -1;
-constexpr auto ENABLE_REUSE = 1;
+constexpr char ENABLE_REUSE = 1;
 
 Socket::Socket(Protocol protocol)
     : m_protocol(protocol)
