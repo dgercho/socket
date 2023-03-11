@@ -85,12 +85,12 @@ Socket Socket::accept()
 
 int Socket::send(const void *data, size_t length)
 {
-    return ::send(m_socket, static_cast<const uint8_t *>(data), length, 0);
+    return ::send(m_socket, reinterpret_cast<const char *>(data), length, 0);
 }
 
 int Socket::recv(void *buffer, size_t length)
 {
-    return ::recv(m_socket, static_cast<uint8_t *>(buffer), length, 0);
+    return ::recv(m_socket, reinterpret_cast<char *>(buffer), length, 0);
 }
 
 void Socket::close()
