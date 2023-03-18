@@ -85,7 +85,7 @@ TEST(partial_recv, BasicAssertions)
     // Try to send data
     int snd = sock3.send(demo_str.c_str(), demo_str.size());
     // Try to receive data
-    std::vector<char> recv_buffer(demo_str.size());
+    std::vector<uint8_t> recv_buffer(demo_str.size());
     size_t total_read = 0;
     total_read += sock2.recv(recv_buffer.data(), 5);
     total_read += sock2.recv(&recv_buffer.at(total_read), demo_str.size());
@@ -95,6 +95,8 @@ TEST(partial_recv, BasicAssertions)
     sock2.close();
     sock1.close();
     // Expect equality.
-    EXPECT_STREQ(demo_str.data(), recv_buffer.data());
+    std::string buffer_string;
+    buffer_string.assign(recv_buffer.begin(), recv_buffer.end());
+    EXPECT_STREQ(buffer_string.data(), demo_str.data());
     EXPECT_EQ(recv_buffer.size(), demo_str.size());
 }
