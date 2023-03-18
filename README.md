@@ -1,9 +1,9 @@
 # Socket
-Simple socket wrapper class for C++. Runs on Windows, Linux and macOS.
+Simple TCP socket wrapper class for C++. Runs on Windows, Linux and macOS.
 
 Build and test workflows: 
-- Windows CI Status: [![Windows](https://github.com/dgercho/socket/actions/workflows/Windows.yml/badge.svg)](https://github.com/dgercho/socket/actions/workflows/Windows.yml/badge.svg) 
-- Unix CI Status: [![Unix](https://github.com/dgercho/socket/actions/workflows/Unix.yml/badge.svg)](https://github.com/dgercho/socket/actions/workflows/Unix.yml/badge.svg)
+[![Windows](https://github.com/dgercho/socket/actions/workflows/Windows.yml/badge.svg)](https://github.com/dgercho/socket/actions/workflows/Windows.yml) 
+[![Unix](https://github.com/dgercho/socket/actions/workflows/Unix.yml/badge.svg)](https://github.com/dgercho/socket/actions/workflows/Unix.yml)
 
 
 ## How to use it?
@@ -17,7 +17,7 @@ Copy the the files from `src` to your project (`socket.cpp` and `socket.h`), and
     int main() {
 
         //Create a socket
-        Socket sock = Socket(Socket::Protocol::TCP);
+        Socket sock = Socket();
         sock.connect("127.0.0.1", 8000);
 
         //Send data
