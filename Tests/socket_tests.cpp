@@ -30,17 +30,20 @@ TEST(create_tcp_sock, BasicAssertions)
     auto sock3 = sock1.accept();
     std::string demo_str = "hello";
     // Try to send data
-    int snd = sock3.send(demo_str.c_str(), demo_str.size());
+    int snd = sock3.send(demo_str.data(), demo_str.size());
     // Try to receive data
     std::vector<char> recv_buffer(demo_str.size());
     sock2.recv(recv_buffer.data(), demo_str.size());
+    recv_buffer.resize(demo_str.size());
+    std::string buffer_string;
+    buffer_string.assign(recv_buffer.begin(), recv_buffer.end());
     // Cleanup
     sock3.close();
     sock2.close();
     sock1.close();
     // Expect equality.
-    EXPECT_STREQ(demo_str.data(), recv_buffer.data());
-    EXPECT_EQ(recv_buffer.size(), demo_str.size());
+    EXPECT_STREQ(demo_str.data(), buffer_string.data());
+    EXPECT_EQ(buffer_string.size(), demo_str.size());
 }
 
 TEST(try_bind_twice, HasCertainMessage)
