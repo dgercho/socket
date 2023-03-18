@@ -16,12 +16,9 @@ typedef int SOCKET;
 
 class Socket {
  public:
-  /// @brief Enum of protocols
-  enum class Protocol { TCP, UDP };
 
   /// @brief Default constructor of `Socket`.
-  /// @param protocol (Protocol) - the protocol used by the socket.
-  Socket(Protocol protocol = Protocol::TCP);
+  Socket();
 
   ~Socket();
 
@@ -60,10 +57,9 @@ class Socket {
   int recv(void *buffer, size_t length);
 
  protected:
-  Socket(SOCKET socket, Protocol protocol);
+  Socket(SOCKET socket);
 
  private:
-  Protocol m_protocol;
   int m_socket;
 #ifdef _WIN32
   WSADATA m_wsaData;

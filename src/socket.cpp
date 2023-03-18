@@ -6,13 +6,10 @@
 
 constexpr auto SOCKET_ERROR_CODE = -1;
 
-Socket::Socket(Protocol protocol)
-    : m_protocol(protocol)
+Socket::Socket() :
 #ifdef _WIN32
-      ,
       m_socket(INVALID_SOCKET)
 #else
-      ,
       m_socket(0)
 #endif
 {
@@ -22,14 +19,7 @@ Socket::Socket(Protocol protocol)
         throw std::runtime_error(std::strerror(errno));
     }
 #endif
-
-    int type = (protocol == Protocol::TCP) ? SOCK_STREAM : SOCK_DGRAM;
-    m_socket = socket(AF_INET, type, 0);
-
-    linger lin;
-    lin.l_onoff = 0;
-    lin.l_linger = 0;
-
+    m_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (m_socket == SOCKET_ERROR_CODE)
     {
 #ifdef _WIN32
@@ -39,7 +29,7 @@ Socket::Socket(Protocol protocol)
     }
 }
 
-Socket::Socket(SOCKET socket, Protocol protocol) : m_protocol(protocol), m_socket(std::move(socket))
+Socket::Socket(SOCKET socket) : m_socket(std::move(socket))
 {
 #ifdef _WIN32
     if (WSAStartup(MAKEWORD(2, 2), &m_wsaData) != 0)
@@ -88,7 +78,7 @@ Socket Socket::accept()
         throw std::runtime_error(std::strerror(errno));
     }
 
-    return Socket(std::move(client_socket), m_protocol);
+    return Socket(std::move(client_socket));
 }
 
 int Socket::send(const void *data, size_t length)

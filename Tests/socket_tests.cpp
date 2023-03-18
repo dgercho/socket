@@ -20,11 +20,11 @@ constexpr auto TEST_PORT_4 = 9004;
 TEST(create_tcp_sock, BasicAssertions)
 {
     // Create a listening socket
-    Socket sock1 = Socket(Socket::Protocol::TCP);
+    Socket sock1 = Socket();
     sock1.bind(TEST_PORT_1);
     sock1.listen(1);
     // Connect to listening socket
-    Socket sock2 = Socket(Socket::Protocol::TCP);
+    Socket sock2 = Socket();
     sock2.connect(TEST_IP_ADDR, TEST_PORT_1);
     // Accept conneciton
     auto sock3 = sock1.accept();
@@ -46,10 +46,10 @@ TEST(create_tcp_sock, BasicAssertions)
 TEST(try_bind_twice, HasCertainMessage)
 {
     // Bind a socket
-    Socket sock1 = Socket(Socket::Protocol::TCP);
+    Socket sock1 = Socket();
     sock1.bind(TEST_PORT_2);
     // Bind socket with same port
-    Socket sock2 = Socket(Socket::Protocol::TCP);
+    Socket sock2 = Socket();
     EXPECT_THROW(
         {
             try
@@ -71,7 +71,7 @@ TEST(try_bind_twice, HasCertainMessage)
 TEST(try_connect_to_closed_peer, BasicAssertions)
 {
     // Create a listening socket
-    Socket sock1 = Socket(Socket::Protocol::TCP);
+    Socket sock1 = Socket();
     auto connect_result = sock1.connect(TEST_IP_ADDR, TEST_PORT_3);
     sock1.close();
     // Expect connection error.
@@ -81,11 +81,11 @@ TEST(try_connect_to_closed_peer, BasicAssertions)
 TEST(partial_recv, BasicAssertions)
 {
     // Create a listening socket
-    Socket sock1 = Socket(Socket::Protocol::TCP);
+    Socket sock1 = Socket();
     sock1.bind(TEST_PORT_4);
     sock1.listen(1);
     // Connect to listening socket
-    Socket sock2 = Socket(Socket::Protocol::TCP);
+    Socket sock2 = Socket();
     sock2.connect(TEST_IP_ADDR, TEST_PORT_4);
     // Accept conneciton
     auto sock3 = sock1.accept();
