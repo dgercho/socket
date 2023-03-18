@@ -1,11 +1,6 @@
 # Socket
 Simple TCP socket wrapper class for C++. Runs on Windows, Linux and macOS.
 
-Build and test workflows: 
-[![Windows](https://github.com/dgercho/socket/actions/workflows/Windows.yml/badge.svg)](https://github.com/dgercho/socket/actions/workflows/Windows.yml) 
-[![Unix](https://github.com/dgercho/socket/actions/workflows/Unix.yml/badge.svg)](https://github.com/dgercho/socket/actions/workflows/Unix.yml)
-
-
 ## How to use it?
 Copy the the files from `src` to your project (`socket.cpp` and `socket.h`), and include the header file.
 
