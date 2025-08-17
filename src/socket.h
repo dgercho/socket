@@ -46,7 +46,7 @@ class Socket {
   Socket Accept();
 
   /// @brief Close the socket.
-  void Close();
+  void Close() noexcept;
 
   /// @brief Send data to endpoint.
   /// @param data (const void *) - pointer to data buffer.

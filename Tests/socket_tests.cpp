@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
 #include "../src/socket.h"
+#include "../src/exceptions.h"
+
 
 constexpr auto TEST_IP_ADDR = "127.0.0.1";
 #ifdef _WIN32
@@ -57,7 +59,7 @@ TEST(try_bind_twice, HasCertainMessage)
         {
             sock2.Bind(TEST_PORT_2);
         },
-        std::runtime_error);
+        SocketBindException);
 
     sock2.Close();
     sock1.Close();

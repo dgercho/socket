@@ -1,8 +1,7 @@
 #include "socket.h"
 
 #include <cstring>
-#include <stdexcept>
-#include <system_error>
+#include <netinet/in.h>
 #include "exceptions.h"
 
 constexpr auto SOCKET_ERROR_CODE = -1;
@@ -12,16 +11,16 @@ Socket::Socket()
 #ifdef _WIN32
     if (WSAStartup(MAKEWORD(2, 2), &m_wsaData) != 0)
     {
-        throw std::runtime_error(std::strerror(errno));
+        throw SocketCreateException(std::strerror(errno));
     }
 #endif
-    m_socket = socket(AF_INET, SOCK_STREAM, 0);
+    m_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (m_socket == SOCKET_ERROR_CODE)
     {
 #ifdef _WIN32
         WSACleanup();
 #endif
-        throw SocketCreateException();
+        throw SocketCreateException(std::strerror(errno));
     }
 }
 
@@ -49,18 +48,18 @@ int Socket::Connect(std::string address, int port)
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
     addr.sin_addr.s_addr = inet_addr(address.c_str());
-    return ::connect(m_socket, (sockaddr *)&addr, sizeof(addr));
+    return ::connect(m_socket, reinterpret_cast<sockaddr *>(&addr), sizeof(addr));
 }
 
 void Socket::Bind(int port)
 {
-    sockaddr_in addr;
+    sockaddr_in addr = {0};
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    if (::bind(m_socket, (sockaddr *)&addr, sizeof(addr)) == SOCKET_ERROR_CODE)
+    if (::bind(m_socket, reinterpret_cast<sockaddr *>(&addr), sizeof(addr)) == SOCKET_ERROR_CODE)
     {
-        throw std::runtime_error(std::strerror(errno));
+        throw SocketBindException(std::strerror(errno));
     }
 }
 
@@ -68,7 +67,7 @@ void Socket::Listen(int backlog)
 {
     if (::listen(m_socket, backlog) == SOCKET_ERROR_CODE)
     {
-        throw std::runtime_error(std::strerror(errno));
+        throw SocketListenException(std::strerror(errno));
     }
 }
 
@@ -79,7 +78,7 @@ Socket Socket::Accept()
     SOCKET client_socket = ::accept(m_socket, (sockaddr *)&client_addr, &client_addr_size);
     if (client_socket == SOCKET_ERROR_CODE)
     {
-        throw std::runtime_error(std::strerror(errno));
+        throw SocketAcceptException(std::strerror(errno));
     }
 
     return Socket(std::move(client_socket));
@@ -95,7 +94,7 @@ int Socket::Receive(void *buffer, size_t length)
     return ::recv(m_socket, reinterpret_cast<char *>(buffer), length, 0);
 }
 
-void Socket::Close()
+void Socket::Close() noexcept
 {
     if (m_socket != SOCKET_ERROR_CODE)
     {
