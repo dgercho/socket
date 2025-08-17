@@ -1,7 +1,6 @@
 #include "socket.h"
 
 #include <cstring>
-#include <netinet/in.h>
 #include "exceptions.h"
 
 constexpr auto SOCKET_ERROR_CODE = -1;
