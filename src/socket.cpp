@@ -34,17 +34,13 @@ Socket::Socket(Socket&& other) noexcept : m_socket(other.m_socket)
 }
 
 Socket& Socket::operator=(Socket&& other) noexcept {
-    if (this != &other) {
-        if (m_socket != SOCKET_ERROR_CODE) {
-            m_socket = other.m_socket;
-            other.m_socket = SOCKET_ERROR_CODE;
+    m_socket = other.m_socket;
+    other.m_socket = SOCKET_ERROR_CODE;
 #ifdef _WIN32
-            m_wsaData = other.m_wsaData;
-            ZeroMemory(&other.m_wsaData, sizeof(other.m_wsaData));
+    m_wsaData = other.m_wsaData;
+    ZeroMemory(&other.m_wsaData, sizeof(other.m_wsaData));
 #endif
-            return *this;
-        }
-    }
+    return *this;
 }
 
 int Socket::Connect(std::string address, int port)
