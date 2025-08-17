@@ -13,13 +13,13 @@ Copy the the files from `src` to your project (`socket.cpp` and `socket.h`), and
 
         //Create a socket
         Socket sock = Socket();
-        sock.connect("127.0.0.1", 8000);
+        sock.Connect("127.0.0.1", 8000);
 
         //Send data
         std::string data_to_send = "Hello world :S";
-        sock.send(data_to_send.data(),data_to_send.size());
+        sock.Send(data_to_send.data(),data_to_send.size());
 
-        sock.close();
+        sock.Close();
         return 0;
     }
 ```
