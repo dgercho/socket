@@ -19,13 +19,14 @@ class Socket {
   /// @brief Connect to endpoint.
   /// @param address (std::string).
   /// @param port (int).
-  /// @return operation result (int) - `0` if connected, `-1` if there was an
+  /// @return operation result (int)
   /// error.
-  int Connect(std::string address, int port);
+  int Connect(const std::string& address, int port);
 
   /// @brief Bind operation.
+  /// @param address (std::string).
   /// @param port - port to bind.
-  void Bind(int port);
+  void Bind(const std::string& address, int port);
 
   /// @brief Allows to listen for connections.
   /// @param backlog (int) - number of pending connections the socket will hold.

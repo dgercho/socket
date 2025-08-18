@@ -42,27 +42,36 @@ Socket& Socket::operator=(Socket&& other) noexcept {
     other.m_socket = INVALID_SOCKET;
 #ifdef _WIN32
     m_wsaData = other.m_wsaData;
-    ZeroMemory(&other.m_wsaData, sizeof(other.m_wsaData));
 #endif
     return *this;
 }
 
-int Socket::Connect(std::string address, int port)
+int Socket::Connect(const std::string& address, int port)
 {
-    sockaddr_in addr = {0};
+    struct sockaddr_in addr = {0};
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
-    addr.sin_addr.s_addr = inet_addr(address.c_str());
-    return ::connect(m_socket, reinterpret_cast<sockaddr *>(&addr), sizeof(addr));
+    auto response = inet_pton(AF_INET, address.c_str(), &addr.sin_addr);
+    if (response != 1) {
+        throw InetPtonException(std::to_string(GetSocketError()));
+    }
+    response = ::connect(m_socket, reinterpret_cast<struct sockaddr *>(&addr), sizeof(addr));
+    if (response != 0) {
+        throw SocketConnectException(std::to_string(GetSocketError()));
+    }
+    return response;
 }
 
-void Socket::Bind(int port)
+void Socket::Bind(const std::string& address, int port)
 {
-    sockaddr_in addr = {0};
+    struct sockaddr_in addr = {0};
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
-    addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    if (::bind(m_socket, reinterpret_cast<sockaddr *>(&addr), sizeof(addr)) == INVALID_SOCKET)
+    auto response = inet_pton(AF_INET, address.c_str(), &addr.sin_addr);
+    if (response != 1) {
+        throw InetPtonException(std::to_string(GetSocketError()));
+    }
+    if (::bind(m_socket, reinterpret_cast<struct sockaddr *>(&addr), sizeof(addr)) == INVALID_SOCKET)
     {
         throw SocketBindException(std::to_string(GetSocketError()));
     }
@@ -70,7 +79,7 @@ void Socket::Bind(int port)
 
 void Socket::Listen(int backlog)
 {
-    if (::listen(m_socket, backlog) == INVALID_SOCKET)
+    if (::listen(m_socket, backlog) != 0)
     {
         throw SocketListenException(std::to_string(GetSocketError()));
     }
@@ -78,9 +87,9 @@ void Socket::Listen(int backlog)
 
 Socket Socket::Accept()
 {
-    sockaddr_in client_addr;
+    struct sockaddr_in client_addr = {0};
     socklen_t client_addr_size = sizeof(client_addr);
-    SOCKET client_socket = ::accept(m_socket, (sockaddr *)&client_addr, &client_addr_size);
+    SOCKET client_socket = ::accept(m_socket, reinterpret_cast<struct sockaddr *>(&client_addr), &client_addr_size);
     if (client_socket == INVALID_SOCKET)
     {
         throw SocketAcceptException(std::to_string(GetSocketError()));

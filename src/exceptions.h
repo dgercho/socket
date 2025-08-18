@@ -25,6 +25,8 @@ private:
 
 
 DECLARE_EXCEPTION(SocketCreateException, "Error creating socket")
+DECLARE_EXCEPTION(SocketConnectException, "Error connecting socket")
 DECLARE_EXCEPTION(SocketBindException, "Socket bind error")
 DECLARE_EXCEPTION(SocketListenException, "Socket listen error")
 DECLARE_EXCEPTION(SocketAcceptException, "Socket accept error")
+DECLARE_EXCEPTION(InetPtonException, "inet_pton failed")

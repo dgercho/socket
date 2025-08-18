@@ -5,6 +5,7 @@
 
 
 constexpr auto TEST_IP_ADDR = "127.0.0.1";
+constexpr auto TEST_IP_ADDR_LISTEN = "0.0.0.0";
 #ifdef _WIN32
 constexpr auto TEST_PORT_1 = 8001;
 constexpr auto TEST_PORT_2 = 8002;
@@ -23,7 +24,7 @@ TEST(create_tcp_sock, BasicAssertions)
 {
     // Create a listening socket
     Socket sock1 = Socket();
-    sock1.Bind(TEST_PORT_1);
+    sock1.Bind(TEST_IP_ADDR_LISTEN, TEST_PORT_1);
     sock1.Listen(1);
     // Connect to listening socket
     Socket sock2 = Socket();
@@ -52,12 +53,12 @@ TEST(try_bind_twice, HasCertainMessage)
 {
     // Bind a socket
     Socket sock1 = Socket();
-    sock1.Bind(TEST_PORT_2);
+    sock1.Bind(TEST_IP_ADDR_LISTEN, TEST_PORT_2);
     // Bind socket with same port
     Socket sock2 = Socket();
     EXPECT_THROW(
         {
-            sock2.Bind(TEST_PORT_2);
+            sock2.Bind(TEST_IP_ADDR_LISTEN, TEST_PORT_2);
         },
         SocketBindException);
 
@@ -69,17 +70,19 @@ TEST(try_connect_to_closed_peer, BasicAssertions)
 {
     // Create a listening socket
     Socket sock1 = Socket();
-    auto connect_result = sock1.Connect(TEST_IP_ADDR, TEST_PORT_3);
+    EXPECT_THROW(
+        {
+            auto connect_result = sock1.Connect(TEST_IP_ADDR, TEST_PORT_3);
+        },
+        SocketConnectException);
     sock1.Close();
-    // Expect connection error.
-    EXPECT_EQ(connect_result, -1);
 }
 
 TEST(partial_recv, BasicAssertions)
 {
     // Create a listening socket
     Socket sock1 = Socket();
-    sock1.Bind(TEST_PORT_4);
+    sock1.Bind(TEST_IP_ADDR_LISTEN, TEST_PORT_4);
     sock1.Listen(1);
     // Connect to listening socket
     Socket sock2 = Socket();
