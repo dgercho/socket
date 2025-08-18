@@ -3,23 +3,29 @@
 #include <cstring>
 #include "exceptions.h"
 
-constexpr auto SOCKET_ERROR_CODE = -1;
+int GetSocketError() {
+#ifdef _WIN32
+    return WSAGetLastError();
+#else
+    return errno;
+#endif
+}
 
 Socket::Socket()
 {
 #ifdef _WIN32
     if (WSAStartup(MAKEWORD(2, 2), &m_wsaData) != 0)
     {
-        throw SocketCreateException(std::strerror(errno));
+        throw SocketCreateException(std::to_string(GetSocketError()));
     }
 #endif
     m_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (m_socket == SOCKET_ERROR_CODE)
+    if (m_socket == INVALID_SOCKET)
     {
 #ifdef _WIN32
         WSACleanup();
 #endif
-        throw SocketCreateException(std::strerror(errno));
+        throw SocketCreateException(std::to_string(GetSocketError()));
     }
 }
 
@@ -27,13 +33,13 @@ Socket::Socket(SOCKET socket) : m_socket(socket) {}
 
 Socket::Socket(Socket&& other) noexcept : m_socket(other.m_socket) 
 {
-    other.m_socket = SOCKET_ERROR_CODE;
+    other.m_socket = INVALID_SOCKET;
 
 }
 
 Socket& Socket::operator=(Socket&& other) noexcept {
     m_socket = other.m_socket;
-    other.m_socket = SOCKET_ERROR_CODE;
+    other.m_socket = INVALID_SOCKET;
 #ifdef _WIN32
     m_wsaData = other.m_wsaData;
     ZeroMemory(&other.m_wsaData, sizeof(other.m_wsaData));
@@ -56,17 +62,17 @@ void Socket::Bind(int port)
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    if (::bind(m_socket, reinterpret_cast<sockaddr *>(&addr), sizeof(addr)) == SOCKET_ERROR_CODE)
+    if (::bind(m_socket, reinterpret_cast<sockaddr *>(&addr), sizeof(addr)) == INVALID_SOCKET)
     {
-        throw SocketBindException(std::strerror(errno));
+        throw SocketBindException(std::to_string(GetSocketError()));
     }
 }
 
 void Socket::Listen(int backlog)
 {
-    if (::listen(m_socket, backlog) == SOCKET_ERROR_CODE)
+    if (::listen(m_socket, backlog) == INVALID_SOCKET)
     {
-        throw SocketListenException(std::strerror(errno));
+        throw SocketListenException(std::to_string(GetSocketError()));
     }
 }
 
@@ -75,9 +81,9 @@ Socket Socket::Accept()
     sockaddr_in client_addr;
     socklen_t client_addr_size = sizeof(client_addr);
     SOCKET client_socket = ::accept(m_socket, (sockaddr *)&client_addr, &client_addr_size);
-    if (client_socket == SOCKET_ERROR_CODE)
+    if (client_socket == INVALID_SOCKET)
     {
-        throw SocketAcceptException(std::strerror(errno));
+        throw SocketAcceptException(std::to_string(GetSocketError()));
     }
 
     return Socket(std::move(client_socket));
@@ -95,7 +101,7 @@ int Socket::Receive(void *buffer, size_t length)
 
 void Socket::Close() noexcept
 {
-    if (m_socket != SOCKET_ERROR_CODE)
+    if (m_socket != INVALID_SOCKET)
     {
         int result = 0;
 #ifdef _WIN32
@@ -104,7 +110,7 @@ void Socket::Close() noexcept
 #else
         result = ::close(m_socket);
 #endif
-        m_socket = SOCKET_ERROR_CODE;
+        m_socket = INVALID_SOCKET;
     }
 }
 
