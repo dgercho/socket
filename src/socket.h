@@ -1,17 +1,7 @@
 #ifndef SOCKET_H
 #define SOCKET_H
 
-#ifdef _WIN32
-#include <winsock2.h>
-#pragma comment(lib, "Ws2_32.lib")
-#include <ws2tcpip.h>
-#else  // for Unix
-typedef int SOCKET;
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#endif
+#include "defs.h"
 #include <string>
 
 class Socket {
@@ -66,5 +56,4 @@ class Socket {
   WSADATA m_wsaData;
 #endif
 };
-
 #endif
